@@ -23,7 +23,8 @@ class LoginController extends Controller
 
         if (AuthFacade::attempt($credentials, (bool) $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended(route('admin.dashboard'));
+            // Always show the main school website first after login
+            return redirect()->intended(route('home'));
         }
 
         return back()->withErrors([

@@ -12,7 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->redirectGuestsTo(fn () => route('login'));
-        $middleware->redirectUsersTo(fn () => route('admin.dashboard'));
+        // After login, send users to the public school website home page first
+        $middleware->redirectUsersTo(fn () => route('home'));
+        $middleware->alias([
+            'can.section' => \App\Http\Middleware\EnsureSectionPermission::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -40,28 +40,45 @@
                     School Website
                 </a>
                 <div class="px-3 py-2 pt-4 text-xs font-semibold text-gray-500 dark:text-slate-500 uppercase tracking-wider">Portal</div>
+                @if(auth()->check() && auth()->user()->can_view_dashboard)
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-gradient-to-r from-cyan-500/20 to-violet-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30' : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                     <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                     Dashboard
                 </a>
+                @endif
                 <div class="px-3 py-2 pt-4 text-xs font-semibold text-gray-500 dark:text-slate-500 uppercase tracking-wider">Management</div>
+                @if(auth()->check() && auth()->user()->can_view_students)
                 <a href="{{ route('admin.students.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('admin.students.*') ? 'bg-gradient-to-r from-cyan-500/20 to-violet-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30' : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                     <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     Students
                 </a>
+                @endif
+                @if(auth()->check() && auth()->user()->can_view_staff)
                 <a href="{{ route('admin.staff.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('admin.staff.*') ? 'bg-gradient-to-r from-cyan-500/20 to-violet-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30' : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                     <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     Staff & Teachers
                 </a>
+                @endif
+                @if(auth()->check() && auth()->user()->can_view_fees)
                 <a href="{{ route('admin.fees.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('admin.fees.*') ? 'bg-gradient-to-r from-cyan-500/20 to-violet-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30' : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                     <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
                     Fee Tracking
                 </a>
+                @endif
                 <div class="px-3 py-2 pt-4 text-xs font-semibold text-gray-500 dark:text-slate-500 uppercase tracking-wider">Academic</div>
+                @if(auth()->check() && auth()->user()->can_view_academics)
                 <a href="{{ route('admin.academics.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('admin.academics.*') ? 'bg-gradient-to-r from-cyan-500/20 to-violet-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30' : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
                     <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
                     Exam Results
                 </a>
+                @endif
+                <div class="px-3 py-2 pt-4 text-xs font-semibold text-gray-500 dark:text-slate-500 uppercase tracking-wider">System</div>
+                @if(auth()->check() && auth()->user()->can_view_admin_users)
+                <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('admin.users.*') ? 'bg-gradient-to-r from-cyan-500/20 to-violet-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30' : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-800' }}">
+                    <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                    Admin Users
+                </a>
+                @endif
             </nav>
 
             <div class="mt-auto p-4 border-t border-gray-200 dark:border-slate-800 transition-colors">
@@ -70,7 +87,7 @@
                     <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=06b6d4&color=fff&size=80" alt="" class="w-8 h-8 rounded-full flex-shrink-0 ring-2 ring-cyan-500/50">
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-medium text-gray-800 dark:text-slate-200 truncate">{{ auth()->user()->name }}</p>
-                        <p class="text-xs text-gray-500 dark:text-slate-500 truncate">Admin</p>
+                        <p class="text-xs text-gray-500 dark:text-slate-500 truncate capitalize">{{ auth()->user()->role ?? 'Admin' }}</p>
                     </div>
                 </div>
                 <form method="POST" action="{{ route('logout') }}" class="mt-2">

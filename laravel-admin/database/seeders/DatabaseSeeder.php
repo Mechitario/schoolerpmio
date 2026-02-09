@@ -28,7 +28,17 @@ class DatabaseSeeder extends Seeder
     {
         User::firstOrCreate(
             ['email' => 'admin@school.com'],
-            ['name' => 'Admin', 'password' => 'password']
+            [
+                'name' => 'Admin',
+                'password' => 'password',
+                'role' => 'admin',
+                'can_view_dashboard' => true,
+                'can_view_admin_users' => true,
+                'can_view_students' => true,
+                'can_view_staff' => true,
+                'can_view_fees' => true,
+                'can_view_academics' => true,
+            ]
         );
     }
 
