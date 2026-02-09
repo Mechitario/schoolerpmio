@@ -11,7 +11,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@prisma/client": "latest",
+    "@prisma/client": "^4.16.0",
     "clsx": "latest",
     "lucide-react": "latest",
     "next": "latest",
@@ -26,7 +26,7 @@
     "@types/react-dom": "latest",
     "autoprefixer": "latest",
     "postcss": "latest",
-    "prisma": "latest",
+    "prisma": "^4.16.0",
     "tailwindcss": "latest",
     "typescript": "latest"
   }
