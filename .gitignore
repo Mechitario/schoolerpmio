@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+laravel-admin/vendor/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Build / cache
+.next/
+laravel-admin/bootstrap/cache/*
+!laravel-admin/bootstrap/cache/.gitkeep
+laravel-admin/storage/framework/cache/*
+laravel-admin/storage/framework/sessions/*
+laravel-admin/storage/framework/views/*
+laravel-admin/storage/logs/*
+!laravel-admin/storage/framework/cache/.gitkeep
+!laravel-admin/storage/framework/sessions/.gitkeep
+!laravel-admin/storage/framework/views/.gitkeep
+!laravel-admin/storage/logs/.gitkeep
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+*.log
+
+# Laravel
+laravel-admin/.phpunit.result.cache
+laravel-admin/public/hot
+laravel-admin/public/storage
+
+# Prisma
+prisma/*.db
+prisma/*.db-journal

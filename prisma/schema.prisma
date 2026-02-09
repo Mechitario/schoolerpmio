@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id          String   @id @default(cuid())
+  name        String
+  rollNumber  String   @unique
+  className   String
+  section     String?
+  fees        Fee[]
+  results     Result[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Fee {
+  id          String   @id @default(cuid())
+  studentId   String
+  student     Student  @relation(fields: [studentId], references: [id])
+  amount      Float
+  status      FeeStatus @default(PENDING)
+  month       String
+  paidDate    DateTime?
+  createdAt   DateTime @default(now())
+}
+
+enum FeeStatus {
+  PAID
+  PENDING
+  PARTIAL
+}
+
+model Staff {
+  id          String   @id @default(cuid())
+  name        String
+  role        String
+  salary      Float
+  salaries    Salary[]
+  createdAt   DateTime @default(now())
+}
+
+model Salary {
+  id          String   @id @default(cuid())
+  staffId     String
+  staff       Staff    @relation(fields: [staffId], references: [id])
+  amount      Float
+  month       String
+  paidDate    DateTime @default(now())
+}
+
+model Result {
+  id          String   @id @default(cuid())
+  studentId   String
+  student     Student  @relation(fields: [studentId], references: [id])
+  subject     String
+  marks       Float
+  totalMarks  Float
+  examName    String
+  createdAt   DateTime @default(now())
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  type        TransactionType
+  amount      Float
+  description String
+  date        DateTime @default(now())
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
