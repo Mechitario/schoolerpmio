@@ -1,4 +1,4 @@
-# EduManage Admin (Laravel)
+# Shri Memorial Public School Admin (Laravel)
 
 School admin dashboard: students, staff, fees, academics. PHP 8.2+, Composer.
 

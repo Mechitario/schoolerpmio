@@ -24,7 +24,7 @@
     <div class="report-card-wrapper bg-white text-gray-900 border border-gray-300 rounded-lg overflow-hidden shadow-sm print:shadow-none">
         {{-- Top: school name and exam --}}
         <div class="px-6 py-5 border-b border-gray-300 text-center">
-            <p class="text-base font-semibold text-gray-900">EduManage School</p>
+            <p class="text-base font-semibold text-gray-900">Shri Memorial Public School</p>
             <p class="text-sm text-gray-600 mt-0.5">Report Card — {{ $examName }}</p>
         </div>
 

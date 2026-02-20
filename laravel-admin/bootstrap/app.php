@@ -11,9 +11,20 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->redirectGuestsTo(fn () => route('login'));
-        // After login, send users to the public school website home page first
-        $middleware->redirectUsersTo(fn () => route('home'));
+        // Only redirect guests to admin login if not on parent routes
+        $middleware->redirectGuestsTo(function ($request) {
+            if ($request->is('parent/*')) {
+                return route('parent.login');
+            }
+            return route('login');
+        });
+        // After login, send users to appropriate dashboard
+        $middleware->redirectUsersTo(function ($request) {
+            if (auth()->guard('parent')->check()) {
+                return route('parent.dashboard');
+            }
+            return route('home');
+        });
         $middleware->alias([
             'can.section' => \App\Http\Middleware\EnsureSectionPermission::class,
         ]);

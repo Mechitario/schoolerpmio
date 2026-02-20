@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login – Shri Memorial Public School</title>
+    <title>Parent Login – Shri Memorial Public School</title>
     <script>
         (function() {
             var theme = localStorage.getItem('theme') || 'light';
@@ -21,52 +21,51 @@
     </script>
     <link href="{{ asset('css/app.css') }}?v={{ file_exists(public_path('css/app.css')) ? filemtime(public_path('css/app.css')) : 1 }}" rel="stylesheet">
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 bg-gray-100 dark:bg-slate-950 transition-colors">
+<body class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-purple-100 via-pink-100 to-cyan-100 dark:from-slate-950 dark:via-purple-950 dark:to-slate-900 transition-colors">
     <button type="button" id="theme-toggle" aria-label="Toggle night mode" onclick="window.toggleTheme && window.toggleTheme(); return false;" class="fixed top-4 right-4 z-20 inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800/90 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors shadow text-sm font-medium">
         <svg class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
         <svg class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
         <span id="theme-label">Night mode</span>
     </button>
-    <div class="absolute inset-0 bg-gradient-to-br from-cyan-900/20 via-slate-900 to-violet-900/20 pointer-events-none dark:opacity-100 opacity-0 transition-opacity"></div>
     <div class="w-full max-w-sm relative z-10">
-        <div class="bg-white dark:bg-slate-800/90 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-2xl shadow-black/10 dark:shadow-black/50 p-6 backdrop-blur transition-colors">
+        <div class="bg-white dark:bg-slate-800/90 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-2xl shadow-purple-500/20 dark:shadow-black/50 p-6 transition-colors">
             <div class="text-center mb-6">
-                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500 to-violet-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-cyan-500/20">
-                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 via-pink-500 to-cyan-500 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-purple-500/30">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 </div>
-                <h1 class="text-xl font-bold text-gray-900 dark:text-white">Shri Memorial Public School Admin</h1>
-                <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Sign in to the dashboard</p>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Parent Portal</h1>
+                <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Shri Memorial Public School</p>
             </div>
 
             @if ($errors->any())
-                <div class="mb-4 p-3 rounded-lg bg-rose-500/20 border border-rose-500/30 text-rose-300 text-sm">
+                <div class="mb-4 p-3 rounded-lg bg-rose-500/20 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-sm">
                     {{ $errors->first() }}
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('login') }}" class="space-y-4">
+            <form method="POST" action="{{ route('parent.login') }}" class="space-y-4">
                 @csrf
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5">Email</label>
                     <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus
-                           class="w-full px-4 py-2.5 bg-gray-100 dark:bg-slate-700/50 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-slate-100 placeholder-gray-500 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all">
+                           class="w-full px-4 py-2.5 bg-gray-100 dark:bg-slate-700/50 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-slate-100 placeholder-gray-500 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all">
                 </div>
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5">Password</label>
                     <input type="password" name="password" id="password" required
-                           class="w-full px-4 py-2.5 bg-gray-100 dark:bg-slate-700/50 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-slate-100 placeholder-gray-500 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all">
+                           class="w-full px-4 py-2.5 bg-gray-100 dark:bg-slate-700/50 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-slate-100 placeholder-gray-500 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all">
                 </div>
                 <div class="flex items-center">
-                    <input type="checkbox" name="remember" id="remember" class="rounded border-gray-300 dark:border-slate-600 bg-gray-100 dark:bg-slate-700 text-cyan-500 focus:ring-cyan-500/50">
+                    <input type="checkbox" name="remember" id="remember" class="rounded border-gray-300 dark:border-slate-600 bg-gray-100 dark:bg-slate-700 text-purple-500 focus:ring-purple-500/50">
                     <label for="remember" class="ml-2 text-sm text-gray-600 dark:text-slate-400">Remember me</label>
                 </div>
-                <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-semibold rounded-lg hover:from-cyan-400 hover:to-violet-500 shadow-lg shadow-cyan-500/20 transition-all focus:ring-2 focus:ring-cyan-500/50 focus:ring-offset-2 focus:ring-offset-slate-800">
+                <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 text-white font-semibold rounded-lg hover:from-purple-600 hover:via-pink-600 hover:to-cyan-600 shadow-lg shadow-purple-500/20 transition-all focus:ring-2 focus:ring-purple-500/50 focus:ring-offset-2 focus:ring-offset-slate-800">
                     Sign in
                 </button>
             </form>
         </div>
         <p class="text-center text-sm text-gray-500 dark:text-slate-500 mt-5">
-            <a href="{{ route('home') }}" class="text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 transition-colors">← Back to site</a>
+            <a href="{{ route('home') }}" class="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors">← Back to site</a>
         </p>
     </div>
     <script>
@@ -77,5 +76,3 @@
     </script>
 </body>
 </html>
-
- 

@@ -41,7 +41,7 @@ class DashboardController extends Controller
         $pendingFees = (float) (clone $feeQuery)->selectRaw('COALESCE(SUM(amount - paid_amount), 0) as total')->value('total');
 
         // Recent Fee Collections list with optional filters
-        $listQuery = Fee::query()->with('student');
+        $listQuery = Fee::query()->with(['student', 'parent']);
         if ($reportType === 'monthly' && $reportMonth) {
             $listQuery->where('month', $reportMonth);
         } elseif ($reportYear) {

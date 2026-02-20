@@ -42,7 +42,8 @@ class StudentController extends Controller
 
     public function create(): View
     {
-        return view('students.create');
+        $parents = \App\Models\Guardian::orderBy('name')->get();
+        return view('students.create', compact('parents'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -53,12 +54,14 @@ class StudentController extends Controller
             'class_name' => ['required', 'string', 'in:1,2,3,4,5,6,7,8,9,10,11,12'],
             'section' => ['nullable', 'string', 'max:255'],
             'year' => ['required', 'integer', 'min:2000', 'max:2100'],
+            'parent_id' => ['nullable', 'integer', 'exists:parents,id'],
         ], [
             'roll_number.unique' => 'This roll number is already in use.',
             'class_name.in' => 'Please select a class from 1 to 12.',
         ]);
 
         $validated['year'] = (int) $validated['year'];
+        $validated['parent_id'] = $validated['parent_id'] ?? null;
         Student::create($validated);
 
         return redirect()->route('admin.students.index')
@@ -67,7 +70,8 @@ class StudentController extends Controller
 
     public function edit(Student $student): View
     {
-        return view('students.edit', compact('student'));
+        $parents = \App\Models\Guardian::orderBy('name')->get();
+        return view('students.edit', compact('student', 'parents'));
     }
 
     public function update(Request $request, Student $student): RedirectResponse
@@ -78,12 +82,14 @@ class StudentController extends Controller
             'class_name' => ['required', 'string', 'in:1,2,3,4,5,6,7,8,9,10,11,12'],
             'section' => ['nullable', 'string', 'max:255'],
             'year' => ['required', 'integer', 'min:2000', 'max:2100'],
+            'parent_id' => ['nullable', 'integer', 'exists:parents,id'],
         ], [
             'roll_number.unique' => 'This roll number is already in use.',
             'class_name.in' => 'Please select a class from 1 to 12.',
         ]);
 
         $validated['year'] = (int) $validated['year'];
+        $validated['parent_id'] = $validated['parent_id'] ?? null;
         $student->update($validated);
 
         return redirect()->route('admin.students.index')

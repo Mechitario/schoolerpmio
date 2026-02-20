@@ -81,6 +81,11 @@
                         <span class="text-gray-700 dark:text-slate-300">Students section</span>
                     </label>
                     <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" name="can_view_parents" value="1" {{ old('can_view_parents', 1) ? 'checked' : '' }}
+                               class="w-4 h-4 rounded border-gray-300 dark:border-slate-600 text-cyan-600 focus:ring-cyan-500/50">
+                        <span class="text-gray-700 dark:text-slate-300">Parents section</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer">
                         <input type="checkbox" name="can_view_staff" value="1" {{ old('can_view_staff', 1) ? 'checked' : '' }}
                                class="w-4 h-4 rounded border-gray-300 dark:border-slate-600 text-cyan-600 focus:ring-cyan-500/50">
                         <span class="text-gray-700 dark:text-slate-300">Staff & Teachers section</span>
@@ -89,6 +94,11 @@
                         <input type="checkbox" name="can_view_fees" value="1" {{ old('can_view_fees', 1) ? 'checked' : '' }}
                                class="w-4 h-4 rounded border-gray-300 dark:border-slate-600 text-cyan-600 focus:ring-cyan-500/50">
                         <span class="text-gray-700 dark:text-slate-300">Fee Tracking section</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" name="can_view_inventory" value="1" {{ old('can_view_inventory', 1) ? 'checked' : '' }}
+                               class="w-4 h-4 rounded border-gray-300 dark:border-slate-600 text-cyan-600 focus:ring-cyan-500/50">
+                        <span class="text-gray-700 dark:text-slate-300">Inventory section</span>
                     </label>
                     <label class="flex items-center gap-3 cursor-pointer">
                         <input type="checkbox" name="can_view_academics" value="1" {{ old('can_view_academics', 1) ? 'checked' : '' }}

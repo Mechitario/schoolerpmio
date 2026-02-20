@@ -31,8 +31,10 @@ class UserManagementController extends Controller
             'can_view_dashboard' => ['nullable', 'boolean'],
             'can_view_admin_users' => ['nullable', 'boolean'],
             'can_view_students' => ['nullable', 'boolean'],
+            'can_view_parents' => ['nullable', 'boolean'],
             'can_view_staff' => ['nullable', 'boolean'],
             'can_view_fees' => ['nullable', 'boolean'],
+            'can_view_inventory' => ['nullable', 'boolean'],
             'can_view_academics' => ['nullable', 'boolean'],
         ], [
             'password.min' => 'Password must be at least 8 characters.',
@@ -48,8 +50,10 @@ class UserManagementController extends Controller
             'can_view_dashboard' => (bool) ($validated['can_view_dashboard'] ?? false),
             'can_view_admin_users' => (bool) ($validated['can_view_admin_users'] ?? false),
             'can_view_students' => (bool) ($validated['can_view_students'] ?? false),
+            'can_view_parents' => (bool) ($validated['can_view_parents'] ?? false),
             'can_view_staff' => (bool) ($validated['can_view_staff'] ?? false),
             'can_view_fees' => (bool) ($validated['can_view_fees'] ?? false),
+            'can_view_inventory' => (bool) ($validated['can_view_inventory'] ?? false),
             'can_view_academics' => (bool) ($validated['can_view_academics'] ?? false),
         ]);
 
@@ -73,8 +77,10 @@ class UserManagementController extends Controller
             'can_view_dashboard' => ['nullable', 'boolean'],
             'can_view_admin_users' => ['nullable', 'boolean'],
             'can_view_students' => ['nullable', 'boolean'],
+            'can_view_parents' => ['nullable', 'boolean'],
             'can_view_staff' => ['nullable', 'boolean'],
             'can_view_fees' => ['nullable', 'boolean'],
+            'can_view_inventory' => ['nullable', 'boolean'],
             'can_view_academics' => ['nullable', 'boolean'],
         ], [
             'password.min' => 'Password must be at least 8 characters.',
@@ -88,8 +94,10 @@ class UserManagementController extends Controller
         $user->can_view_dashboard = (bool) ($validated['can_view_dashboard'] ?? false);
         $user->can_view_admin_users = (bool) ($validated['can_view_admin_users'] ?? false);
         $user->can_view_students = (bool) ($validated['can_view_students'] ?? false);
+        $user->can_view_parents = (bool) ($validated['can_view_parents'] ?? false);
         $user->can_view_staff = (bool) ($validated['can_view_staff'] ?? false);
         $user->can_view_fees = (bool) ($validated['can_view_fees'] ?? false);
+        $user->can_view_inventory = (bool) ($validated['can_view_inventory'] ?? false);
         $user->can_view_academics = (bool) ($validated['can_view_academics'] ?? false);
         if (!empty($validated['password'])) {
             $user->password = $validated['password'];

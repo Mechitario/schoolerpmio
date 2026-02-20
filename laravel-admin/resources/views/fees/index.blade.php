@@ -53,7 +53,13 @@
             </div>
             <div>
                 <p class="text-xs font-semibold text-gray-500 dark:text-slate-500 uppercase">Collection rate</p>
-                <p class="text-xl font-bold text-gray-900 dark:text-white">{{ $paidThisMonth + $pendingTotal > 0 ? round(($paidThisMonth / ($paidThisMonth + $pendingTotal)) * 100) : 0 }}%</p>
+                <p class="text-xl font-bold text-gray-900 dark:text-white">
+                    @php
+                        $total = $paidThisMonth + $pendingTotal;
+                        $rate = $total > 0 ? round(($paidThisMonth / $total) * 100) : 0;
+                    @endphp
+                    {{ $rate }}%
+                </p>
             </div>
         </div>
     </div>
@@ -103,45 +109,103 @@
                     <tr class="border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/50">
                         <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Roll No.</th>
                         <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Student</th>
+                        <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Parent</th>
                         <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Class / Section</th>
                         <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Month</th>
-                        <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider text-right">Total amount</th>
-                        <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider text-right">Paid amount</th>
-                        <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider text-right">Remaining</th>
+                        <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Date</th>
+                        <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider text-center">Fee Items</th>
+                        <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider text-right">Total</th>
+                        <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider text-right">Received</th>
+                        <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider text-right">Waived</th>
+                        <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider text-right">Pending</th>
+                        <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider text-right">B/C</th>
                         <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Status</th>
-                        <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Date paid</th>
+                        <th class="px-5 py-3 text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 dark:divide-slate-700">
                     @forelse($fees as $fee)
                     <tr class="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
-                        <td class="px-5 py-3 font-medium text-cyan-600 dark:text-cyan-400">#{{ $fee->student->roll_number ?? '—' }}</td>
+                        <td class="px-5 py-3 font-medium text-cyan-600 dark:text-cyan-400">#{{ $fee->student ? $fee->student->roll_number : '—' }}</td>
                         <td class="px-5 py-3">
                             <div class="flex items-center gap-3">
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode($fee->student->name ?? 'N/A') }}&background=06b6d4&color=fff" alt="" class="w-8 h-8 rounded-lg object-cover ring-2 ring-gray-200 dark:ring-slate-600">
-                                <span class="font-medium text-gray-900 dark:text-slate-100">{{ $fee->student->name ?? '—' }}</span>
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode($fee->student ? $fee->student->name : 'N/A') }}&background=06b6d4&color=fff" alt="" class="w-8 h-8 rounded-lg object-cover ring-2 ring-gray-200 dark:ring-slate-600">
+                                <span class="font-medium text-gray-900 dark:text-slate-100">{{ $fee->student ? $fee->student->name : '—' }}</span>
                             </div>
                         </td>
-                        <td class="px-5 py-3 text-sm text-gray-600 dark:text-slate-300">{{ $fee->student->class_name ?? '—' }}{{ $fee->student->section ? ' / ' . $fee->student->section : '' }}</td>
+                        <td class="px-5 py-3 text-sm text-gray-600 dark:text-slate-300">
+                            @if($fee->parent)
+                                {{ $fee->parent->name }}
+                                @if($fee->parent->phone)
+                                    <span class="text-xs text-gray-500 dark:text-slate-500 block">{{ $fee->parent->phone }}</span>
+                                @endif
+                            @else
+                                —
+                            @endif
+                        </td>
+                        <td class="px-5 py-3 text-sm text-gray-600 dark:text-slate-300">
+                            @if($fee->student)
+                                {{ $fee->student->class_name ?? '—' }}{{ $fee->student->section ? ' / ' . $fee->student->section : '' }}
+                            @else
+                                —
+                            @endif
+                        </td>
                         <td class="px-5 py-3 text-sm text-gray-600 dark:text-slate-300">{{ $fee->month }}</td>
+                        <td class="px-5 py-3 text-sm text-gray-600 dark:text-slate-300">
+                            @if($fee->payment_date)
+                                {{ $fee->payment_date->format('M d, Y') }}
+                            @elseif($fee->paid_date)
+                                {{ $fee->paid_date->format('M d, Y') }}
+                            @else
+                                —
+                            @endif
+                        </td>
+                        <td class="px-5 py-3 text-center">
+                            @if((($fee->copy_fee ?? 0) + ($fee->dress_fee ?? 0) + ($fee->book_fee ?? 0) + ($fee->exam_fee ?? 0)) > 0)
+                                <button 
+                                    type="button"
+                                    onclick="showFeeItemsModal({{ $fee->id }}, {{ $fee->copy_fee ?? 0 }}, {{ $fee->dress_fee ?? 0 }}, {{ $fee->book_fee ?? 0 }}, {{ $fee->exam_fee ?? 0 }}, {{ $fee->amount }})"
+                                    class="text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 hover:underline cursor-pointer text-sm font-medium transition-colors"
+                                >
+                                    View
+                                </button>
+                            @else
+                                <span class="text-gray-400">—</span>
+                            @endif
+                        </td>
                         <td class="px-5 py-3 text-right font-bold text-gray-900 dark:text-white">${{ number_format($fee->amount, 2) }}</td>
-                        <td class="px-5 py-3 text-right font-medium {{ $fee->paid_amount > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-slate-400' }}">${{ number_format($fee->paid_amount ?? 0, 2) }}</td>
-                        <td class="px-5 py-3 text-right font-medium {{ $fee->pending_amount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-gray-500 dark:text-slate-400' }}">${{ number_format($fee->pending_amount, 2) }}</td>
+                        @php
+                            $received = $fee->received_amount ?? $fee->paid_amount ?? 0;
+                            $waived = $fee->waived_off ?? 0;
+                            $pending = $fee->pending_amount;
+                            $receivedClass = $received > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-slate-400';
+                            $pendingClass = $pending > 0 ? 'text-amber-600 dark:text-amber-400 font-semibold' : 'text-gray-500 dark:text-slate-400';
+                        @endphp
+                        <td class="px-5 py-3 text-right font-medium {{ $receivedClass }}">${{ number_format($received, 2) }}</td>
+                        <td class="px-5 py-3 text-right text-sm text-gray-600 dark:text-slate-400">${{ number_format($waived, 2) }}</td>
+                        <td class="px-5 py-3 text-right font-medium {{ $pendingClass }}">${{ number_format($pending, 2) }}</td>
+                        <td class="px-5 py-3 text-right text-sm text-gray-600 dark:text-slate-400">${{ number_format($fee->balance_carried_forward ?? 0, 2) }}</td>
                         <td class="px-5 py-3">
                             @php
-                                $statusClass = match($fee->status) {
-                                    'PAID' => 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400',
-                                    'PENDING' => 'bg-rose-500/20 text-rose-600 dark:text-rose-400',
-                                    default => 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-400',
-                                };
+                                $statusClass = 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-400';
+                                if ($fee->status === 'PAID') {
+                                    $statusClass = 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400';
+                                } elseif ($fee->status === 'PENDING') {
+                                    $statusClass = 'bg-rose-500/20 text-rose-600 dark:text-rose-400';
+                                }
                             @endphp
                             <span class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-lg {{ $statusClass }}">{{ $fee->status_label }}</span>
                         </td>
-                        <td class="px-5 py-3 text-sm text-gray-500 dark:text-slate-400">{{ $fee->paid_date ? $fee->paid_date->format('M d, Y') : '—' }}</td>
+                        <td class="px-5 py-3 text-right">
+                            <a href="{{ route('admin.fees.edit', $fee) }}" class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors" title="Edit fee record">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                Edit
+                            </a>
+                        </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="px-5 py-12 text-center text-gray-500 dark:text-slate-500">
+                        <td colspan="14" class="px-5 py-12 text-center text-gray-500 dark:text-slate-500">
                             <p class="font-medium">No fee records found</p>
                             <p class="text-sm mt-1">Try a different search or record a payment.</p>
                         </td>
@@ -169,4 +233,86 @@
         @endif
     </div>
 </div>
+
+<!-- Fee Items Modal -->
+<div id="feeItemsModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-md w-full mx-4 border border-gray-200 dark:border-slate-700">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-slate-700 flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Fee Items Breakdown</h3>
+            <button onclick="closeFeeItemsModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <div class="px-6 py-4">
+            <div class="space-y-3">
+                <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-slate-700">
+                    <span class="text-gray-600 dark:text-slate-400">Copy Fee</span>
+                    <span class="font-medium text-gray-900 dark:text-white">$<span id="modal-copy-fee">0.00</span></span>
+                </div>
+                <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-slate-700">
+                    <span class="text-gray-600 dark:text-slate-400">Dress Fee</span>
+                    <span class="font-medium text-gray-900 dark:text-white">$<span id="modal-dress-fee">0.00</span></span>
+                </div>
+                <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-slate-700">
+                    <span class="text-gray-600 dark:text-slate-400">Book Fee</span>
+                    <span class="font-medium text-gray-900 dark:text-white">$<span id="modal-book-fee">0.00</span></span>
+                </div>
+                <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-slate-700">
+                    <span class="text-gray-600 dark:text-slate-400">Exam Fee</span>
+                    <span class="font-medium text-gray-900 dark:text-white">$<span id="modal-exam-fee">0.00</span></span>
+                </div>
+                <div class="flex justify-between items-center pt-3">
+                    <span class="text-lg font-semibold text-gray-900 dark:text-white">Total</span>
+                    <span class="text-lg font-bold text-cyan-600 dark:text-cyan-400">$<span id="modal-total">0.00</span></span>
+                </div>
+            </div>
+        </div>
+        <div class="px-6 py-4 border-t border-gray-200 dark:border-slate-700 flex justify-end">
+            <button onclick="closeFeeItemsModal()" class="px-4 py-2 bg-gray-200 dark:bg-slate-700 text-gray-800 dark:text-slate-200 font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-slate-600 transition-colors">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+function showFeeItemsModal(feeId, copyFee, dressFee, bookFee, examFee, total) {
+    document.getElementById('modal-copy-fee').textContent = parseFloat(copyFee).toFixed(2);
+    document.getElementById('modal-dress-fee').textContent = parseFloat(dressFee).toFixed(2);
+    document.getElementById('modal-book-fee').textContent = parseFloat(bookFee).toFixed(2);
+    document.getElementById('modal-exam-fee').textContent = parseFloat(examFee).toFixed(2);
+    document.getElementById('modal-total').textContent = parseFloat(total).toFixed(2);
+    
+    const modal = document.getElementById('feeItemsModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeFeeItemsModal() {
+    const modal = document.getElementById('feeItemsModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = '';
+}
+
+// Close modal when clicking outside
+document.getElementById('feeItemsModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeFeeItemsModal();
+    }
+});
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('feeItemsModal');
+        if (!modal.classList.contains('hidden')) {
+            closeFeeItemsModal();
+        }
+    }
+});
+</script>
 @endsection

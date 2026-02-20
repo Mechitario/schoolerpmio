@@ -82,6 +82,11 @@
                         <span class="text-gray-700 dark:text-slate-300">Students section</span>
                     </label>
                     <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" name="can_view_parents" value="1" {{ old('can_view_parents', $user->can_view_parents) ? 'checked' : '' }}
+                               class="w-4 h-4 rounded border-gray-300 dark:border-slate-600 text-cyan-600 focus:ring-cyan-500/50">
+                        <span class="text-gray-700 dark:text-slate-300">Parents section</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer">
                         <input type="checkbox" name="can_view_staff" value="1" {{ old('can_view_staff', $user->can_view_staff) ? 'checked' : '' }}
                                class="w-4 h-4 rounded border-gray-300 dark:border-slate-600 text-cyan-600 focus:ring-cyan-500/50">
                         <span class="text-gray-700 dark:text-slate-300">Staff & Teachers section</span>
@@ -90,6 +95,11 @@
                         <input type="checkbox" name="can_view_fees" value="1" {{ old('can_view_fees', $user->can_view_fees) ? 'checked' : '' }}
                                class="w-4 h-4 rounded border-gray-300 dark:border-slate-600 text-cyan-600 focus:ring-cyan-500/50">
                         <span class="text-gray-700 dark:text-slate-300">Fee Tracking section</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" name="can_view_inventory" value="1" {{ old('can_view_inventory', $user->can_view_inventory) ? 'checked' : '' }}
+                               class="w-4 h-4 rounded border-gray-300 dark:border-slate-600 text-cyan-600 focus:ring-cyan-500/50">
+                        <span class="text-gray-700 dark:text-slate-300">Inventory section</span>
                     </label>
                     <label class="flex items-center gap-3 cursor-pointer">
                         <input type="checkbox" name="can_view_academics" value="1" {{ old('can_view_academics', $user->can_view_academics) ? 'checked' : '' }}

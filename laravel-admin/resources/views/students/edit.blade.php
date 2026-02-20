@@ -65,6 +65,16 @@
                        class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-slate-100 placeholder-gray-500 dark:placeholder-slate-500 focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-colors"
                        placeholder="e.g. A">
             </div>
+            <div>
+                <label for="parent_id" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5">Parent / Guardian (optional)</label>
+                <select name="parent_id" id="parent_id"
+                        class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-700/50 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-slate-100 focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-colors">
+                    <option value="">None</option>
+                    @foreach($parents as $p)
+                    <option value="{{ $p->id }}" {{ old('parent_id', $student->parent_id) == $p->id ? 'selected' : '' }}>{{ $p->name }}{{ $p->phone ? ' — ' . $p->phone : '' }}</option>
+                    @endforeach
+                </select>
+            </div>
             <div class="flex gap-3 pt-2">
                 <button type="submit" class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-medium rounded-lg hover:from-cyan-400 hover:to-violet-500 shadow-lg shadow-cyan-500/20 transition-all">
                     Update Student

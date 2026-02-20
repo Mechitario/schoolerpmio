@@ -2,9 +2,13 @@
 
 use App\Http\Controllers\AcademicController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\ParentLoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FeeController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\ParentController;
+use App\Http\Controllers\ParentDashboardController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserManagementController;
@@ -12,6 +16,19 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Parent login routes (separate from admin)
+Route::middleware('guest:parent')->group(function () {
+    Route::get('/parent/login', [ParentLoginController::class, 'showLoginForm'])->name('parent.login');
+    Route::post('/parent/login', [ParentLoginController::class, 'login']);
+});
+
+// Parent dashboard routes
+Route::middleware('auth:parent')->group(function () {
+    Route::get('/parent/dashboard', [ParentDashboardController::class, 'index'])->name('parent.dashboard');
+    Route::post('/parent/logout', [ParentLoginController::class, 'logout'])->name('parent.logout');
+});
+
+// Admin login routes
 Route::middleware('guest')->group(function () {
     Route::get('/admin/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/admin/login', [LoginController::class, 'login']);
@@ -36,6 +53,13 @@ Route::middleware('auth')->group(function () {
             Route::get('/students/{student}/edit', [StudentController::class, 'edit'])->name('students.edit');
             Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
         });
+        Route::middleware('can.section:parents')->group(function () {
+            Route::get('/parents', [ParentController::class, 'index'])->name('parents.index');
+            Route::get('/parents/create', [ParentController::class, 'create'])->name('parents.create');
+            Route::post('/parents', [ParentController::class, 'store'])->name('parents.store');
+            Route::get('/parents/{parent}/edit', [ParentController::class, 'edit'])->name('parents.edit');
+            Route::put('/parents/{parent}', [ParentController::class, 'update'])->name('parents.update');
+        });
         Route::middleware('can.section:staff')->group(function () {
             Route::get('/staff', [StaffController::class, 'index'])->name('staff.index');
             Route::get('/staff/create', [StaffController::class, 'create'])->name('staff.create');
@@ -49,9 +73,18 @@ Route::middleware('auth')->group(function () {
             Route::get('/fees', [FeeController::class, 'index'])->name('fees.index');
             Route::get('/fees/create', [FeeController::class, 'create'])->name('fees.create');
             Route::post('/fees', [FeeController::class, 'store'])->name('fees.store');
+            Route::get('/fees/{fee}/edit', [FeeController::class, 'edit'])->name('fees.edit');
+            Route::put('/fees/{fee}', [FeeController::class, 'update'])->name('fees.update');
             Route::get('/fees/import', [FeeController::class, 'importForm'])->name('fees.import');
             Route::post('/fees/import', [FeeController::class, 'importProcess'])->name('fees.import.process');
             Route::get('/fees/import/template', [FeeController::class, 'importTemplate'])->name('fees.import.template');
+        });
+        Route::middleware('can.section:inventory')->group(function () {
+            Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+            Route::get('/inventory/create', [InventoryController::class, 'create'])->name('inventory.create');
+            Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
+            Route::get('/inventory/{inventory}/edit', [InventoryController::class, 'edit'])->name('inventory.edit');
+            Route::put('/inventory/{inventory}', [InventoryController::class, 'update'])->name('inventory.update');
         });
         Route::middleware('can.section:academics')->group(function () {
             Route::get('/academics', [AcademicController::class, 'index'])->name('academics.index');

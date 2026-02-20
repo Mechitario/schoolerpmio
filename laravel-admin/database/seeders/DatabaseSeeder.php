@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Fee;
+use App\Models\Guardian;
 use App\Models\Result;
 use App\Models\Salary;
 use App\Models\Staff;
@@ -17,6 +18,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->seedAdmin();
         $this->seedStudents();
+        $this->seedParents();
         $this->seedStaff();
         $this->seedFees();
         $this->seedResults();
@@ -35,8 +37,10 @@ class DatabaseSeeder extends Seeder
                 'can_view_dashboard' => true,
                 'can_view_admin_users' => true,
                 'can_view_students' => true,
+                'can_view_parents' => true,
                 'can_view_staff' => true,
                 'can_view_fees' => true,
+                'can_view_inventory' => true,
                 'can_view_academics' => true,
             ]
         );
@@ -70,6 +74,54 @@ class DatabaseSeeder extends Seeder
         }
     }
 
+    private function seedParents(): void
+    {
+        $parentsData = [
+            ['name' => 'Rajesh Kumar Verma', 'email' => 'rajesh.verma@example.com', 'phone' => '9876543210', 'address' => 'Sector 115, Noida, UP', 'password' => 'password'],
+            ['name' => 'Sunita Singh', 'email' => 'sunita.singh@example.com', 'phone' => '9876543211', 'address' => 'Sector 50, Noida, UP', 'password' => 'password'],
+            ['name' => 'Manoj Dev', 'email' => 'manoj.dev@example.com', 'phone' => '9876543212', 'address' => 'Sector 62, Noida, UP', 'password' => 'password'],
+            ['name' => 'Kavita Kaur', 'email' => 'kavita.kaur@example.com', 'phone' => '9876543213', 'address' => 'Sector 18, Noida, UP', 'password' => 'password'],
+            ['name' => 'Amit Gupta', 'email' => 'amit.gupta@example.com', 'phone' => '9876543214', 'address' => 'Sector 22, Noida, UP', 'password' => 'password'],
+            ['name' => 'Pooja Ray', 'email' => 'pooja.ray@example.com', 'phone' => '9876543215', 'address' => 'Sector 44, Noida, UP', 'password' => 'password'],
+            ['name' => 'Vikram Sharma', 'email' => 'vikram.sharma@example.com', 'phone' => '9876543216', 'address' => 'Sector 34, Noida, UP', 'password' => 'password'],
+            ['name' => 'Anita Patel', 'email' => 'anita.patel@example.com', 'phone' => '9876543217', 'address' => 'Sector 51, Noida, UP', 'password' => 'password'],
+            ['name' => 'Suresh Reddy', 'email' => 'suresh.reddy@example.com', 'phone' => '9876543218', 'address' => 'Sector 120, Noida, UP', 'password' => 'password'],
+            ['name' => 'Lakshmi Iyer', 'email' => 'lakshmi.iyer@example.com', 'phone' => '9876543219', 'address' => 'Sector 76, Noida, UP', 'password' => 'password'],
+            ['name' => 'Ramesh Nair', 'email' => 'ramesh.nair@example.com', 'phone' => '9876543220', 'address' => 'Sector 93, Noida, UP', 'password' => 'password'],
+            ['name' => 'Deepa Menon', 'email' => 'deepa.menon@example.com', 'phone' => '9876543221', 'address' => 'Sector 49, Noida, UP', 'password' => 'password'],
+            ['name' => 'Sanjay Krishnan', 'email' => 'sanjay.k@example.com', 'phone' => '9876543222', 'address' => 'Sector 71, Noida, UP', 'password' => 'password'],
+            ['name' => 'Neha Malhotra', 'email' => 'neha.malhotra@example.com', 'phone' => '9876543223', 'address' => 'Sector 28, Noida, UP', 'password' => 'password'],
+            ['name' => 'Ravi Desai', 'email' => 'ravi.desai@example.com', 'phone' => '9876543224', 'address' => 'Sector 117, Noida, UP', 'password' => 'password'],
+        ];
+
+        $studentIds = Student::pluck('id')->toArray();
+        $usedStudentIds = [];
+        $parentIds = [];
+
+        foreach ($parentsData as $p) {
+            $password = $p['password'];
+            unset($p['password']);
+            $parent = Guardian::create($p);
+            $parent->password = $password;
+            $parent->save();
+            $parentIds[] = $parent->id;
+            $count = rand(1, 3);
+            $available = array_diff($studentIds, $usedStudentIds);
+            $available = array_values($available);
+            if (count($available) > 0) {
+                $pick = min($count, count($available));
+                $chosen = array_rand(array_flip($available), $pick);
+                if (! is_array($chosen)) {
+                    $chosen = [$chosen];
+                }
+                foreach ($chosen as $sid) {
+                    $usedStudentIds[] = $sid;
+                    Student::where('id', $sid)->update(['parent_id' => $parent->id]);
+                }
+            }
+        }
+    }
+
     private function seedStaff(): void
     {
         $staffList = [
@@ -97,18 +149,95 @@ class DatabaseSeeder extends Seeder
 
     private function seedFees(): void
     {
-        $studentIds = Student::pluck('id')->toArray();
-        $months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        $statuses = ['PAID', 'PAID', 'PAID', 'PENDING', 'PARTIAL'];
+        $students = Student::with('parent')->get();
+        
+        if ($students->isEmpty()) {
+            return;
+        }
+        
+        $months = [
+            'January 2025', 'February 2025', 'March 2025', 'April 2025', 
+            'May 2025', 'June 2025', 'July 2025', 'August 2025', 
+            'September 2025', 'October 2025', 'November 2025', 'December 2025'
+        ];
+        
+        $remarks = [
+            'Regular payment',
+            'Partial payment received',
+            'Full payment',
+            'Payment via bank transfer',
+            'Cash payment',
+            'Payment with waiver',
+            'Balance carried forward',
+            'Early bird discount applied',
+            'Scholarship student',
+            null,
+            null,
+            null,
+        ];
 
+        // Create fees for different scenarios
         for ($i = 0; $i < 80; $i++) {
-            $status = $statuses[array_rand($statuses)];
+            $student = $students->random();
+            
+            // Generate fee components
+            $copyFee = rand(50, 150);
+            $dressFee = rand(200, 400);
+            $bookFee = rand(300, 600);
+            $examFee = rand(100, 300);
+            $total = $copyFee + $dressFee + $bookFee + $examFee;
+            
+            // Determine payment scenario
+            $scenario = rand(1, 10);
+            
+            $paidAmount = 0;
+            $waivedOff = 0;
+            $balanceCarriedForward = 0;
+            $paymentDate = null;
+            
+            if ($scenario <= 4) {
+                // Fully paid (40% chance)
+                $paidAmount = $total;
+                $paymentDate = now()->subDays(rand(1, 90));
+            } elseif ($scenario <= 7) {
+                // Partially paid (30% chance)
+                $paidAmount = rand((int)($total * 0.3), (int)($total * 0.8));
+                $paymentDate = now()->subDays(rand(1, 90));
+            } elseif ($scenario <= 9) {
+                // Pending (20% chance)
+                $paidAmount = 0;
+                $paymentDate = null;
+            } else {
+                // Partially paid with waiver (10% chance)
+                $paidAmount = rand((int)($total * 0.4), (int)($total * 0.7));
+                $waivedOff = rand(50, min(200, $total - $paidAmount));
+                $paymentDate = now()->subDays(rand(1, 90));
+            }
+            
+            // Calculate balance carried forward (sometimes)
+            if (rand(1, 5) === 1 && $paidAmount < $total) {
+                $balanceCarriedForward = rand(50, min(200, $total - $paidAmount));
+            }
+            
+            // received_amount = paid_amount
+            $receivedAmount = $paidAmount;
+            
             Fee::create([
-                'student_id' => $studentIds[array_rand($studentIds)],
-                'amount' => rand(300, 650),
-                'status' => $status,
+                'student_id' => $student->id,
+                'parent_id' => $student->parent_id,
+                'copy_fee' => $copyFee,
+                'dress_fee' => $dressFee,
+                'book_fee' => $bookFee,
+                'exam_fee' => $examFee,
+                'amount' => $total,
+                'received_amount' => $receivedAmount,
+                'paid_amount' => $paidAmount,
+                'waived_off' => $waivedOff,
+                'balance_carried_forward' => $balanceCarriedForward,
                 'month' => $months[array_rand($months)],
-                'paid_date' => in_array($status, ['PAID', 'PARTIAL']) && rand(0, 1) ? now()->subDays(rand(1, 90)) : null,
+                'payment_date' => $paymentDate,
+                'remarks' => $remarks[array_rand($remarks)],
+                // Status will be calculated automatically by the model's booted() method
             ]);
         }
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Fee;
+use App\Models\Guardian;
 use App\Models\Student;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -14,7 +15,7 @@ class FeeController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Fee::with('student');
+        $query = Fee::with(['student', 'parent']);
 
         if ($request->filled('search')) {
             $q = '%' . mb_strtolower($request->search) . '%';
@@ -71,33 +72,65 @@ class FeeController extends Controller
 
     public function create(): View
     {
+        $parents = Guardian::orderBy('name')->get();
         $students = Student::orderBy('name')->get();
         $months = [];
         for ($i = 0; $i < 12; $i++) {
             $d = Carbon::now()->subMonths($i);
             $months[$d->format('F Y')] = $d->format('F Y');
         }
-        return view('fees.create', compact('students', 'months'));
+        return view('fees.create', compact('parents', 'students', 'months'));
     }
 
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
+            'parent_id' => ['nullable', 'exists:parents,id'],
             'student_id' => ['required', 'exists:students,id'],
             'month' => ['required', 'string', 'max:255'],
-            'amount' => ['required', 'numeric', 'min:0'],
+            'payment_date' => ['nullable', 'date'],
+            'copy_fee' => ['nullable', 'numeric', 'min:0'],
+            'dress_fee' => ['nullable', 'numeric', 'min:0'],
+            'book_fee' => ['nullable', 'numeric', 'min:0'],
+            'exam_fee' => ['nullable', 'numeric', 'min:0'],
+            'amount' => ['nullable', 'numeric', 'min:0'],
+            'received_amount' => ['nullable', 'numeric', 'min:0'],
             'paid_amount' => ['nullable', 'numeric', 'min:0'],
+            'balance_carried_forward' => ['nullable', 'numeric', 'min:0'],
+            'remarks' => ['nullable', 'string', 'max:1000'],
+            'waived_off' => ['nullable', 'numeric', 'min:0'],
         ]);
 
-        $amount = (float) $validated['amount'];
-        $paidAmount = (float) ($validated['paid_amount'] ?? 0);
-        $paidAmount = min($paidAmount, $amount);
+        $copyFee = (float) ($validated['copy_fee'] ?? 0);
+        $dressFee = (float) ($validated['dress_fee'] ?? 0);
+        $bookFee = (float) ($validated['book_fee'] ?? 0);
+        $examFee = (float) ($validated['exam_fee'] ?? 0);
+        $total = $copyFee + $dressFee + $bookFee + $examFee;
+        
+        // received_amount = paid_amount (they are the same)
+        $receivedAmount = (float) ($validated['received_amount'] ?? 0);
+        $paidAmount = (float) ($validated['paid_amount'] ?? $receivedAmount);
+        // Ensure they match
+        $receivedAmount = $paidAmount;
+        
+        $waivedOff = (float) ($validated['waived_off'] ?? 0);
+        $balanceCarriedForward = (float) ($validated['balance_carried_forward'] ?? 0);
 
         Fee::create([
+            'parent_id' => $validated['parent_id'] ?? null,
             'student_id' => $validated['student_id'],
-            'amount' => $amount,
-            'paid_amount' => $paidAmount,
             'month' => $validated['month'],
+            'payment_date' => $validated['payment_date'] ?? null,
+            'copy_fee' => $copyFee,
+            'dress_fee' => $dressFee,
+            'book_fee' => $bookFee,
+            'exam_fee' => $examFee,
+            'amount' => $total,
+            'received_amount' => $receivedAmount,
+            'paid_amount' => $paidAmount,
+            'balance_carried_forward' => $balanceCarriedForward,
+            'remarks' => $validated['remarks'] ?? null,
+            'waived_off' => $waivedOff,
         ]);
 
         return redirect()->route('admin.fees.index')
@@ -218,5 +251,73 @@ class FeeController extends Controller
         }
 
         return redirect()->route('admin.fees.index')->with('success', $message);
+    }
+
+    public function edit(Fee $fee): View
+    {
+        $fee->load('student', 'parent');
+        $parents = Guardian::orderBy('name')->get();
+        $students = Student::orderBy('name')->get();
+        $months = [];
+        for ($i = 0; $i < 12; $i++) {
+            $d = Carbon::now()->subMonths($i);
+            $months[$d->format('F Y')] = $d->format('F Y');
+        }
+        return view('fees.edit', compact('fee', 'parents', 'students', 'months'));
+    }
+
+    public function update(Request $request, Fee $fee): RedirectResponse
+    {
+        $validated = $request->validate([
+            'parent_id' => ['nullable', 'exists:parents,id'],
+            'student_id' => ['required', 'exists:students,id'],
+            'month' => ['required', 'string', 'max:255'],
+            'payment_date' => ['nullable', 'date'],
+            'copy_fee' => ['nullable', 'numeric', 'min:0'],
+            'dress_fee' => ['nullable', 'numeric', 'min:0'],
+            'book_fee' => ['nullable', 'numeric', 'min:0'],
+            'exam_fee' => ['nullable', 'numeric', 'min:0'],
+            'amount' => ['nullable', 'numeric', 'min:0'],
+            'received_amount' => ['nullable', 'numeric', 'min:0'],
+            'paid_amount' => ['nullable', 'numeric', 'min:0'],
+            'balance_carried_forward' => ['nullable', 'numeric', 'min:0'],
+            'remarks' => ['nullable', 'string', 'max:1000'],
+            'waived_off' => ['nullable', 'numeric', 'min:0'],
+        ]);
+
+        $copyFee = (float) ($validated['copy_fee'] ?? 0);
+        $dressFee = (float) ($validated['dress_fee'] ?? 0);
+        $bookFee = (float) ($validated['book_fee'] ?? 0);
+        $examFee = (float) ($validated['exam_fee'] ?? 0);
+        $total = $copyFee + $dressFee + $bookFee + $examFee;
+        
+        // received_amount = paid_amount (they are the same)
+        $receivedAmount = (float) ($validated['received_amount'] ?? 0);
+        $paidAmount = (float) ($validated['paid_amount'] ?? $receivedAmount);
+        // Ensure they match
+        $receivedAmount = $paidAmount;
+        
+        $waivedOff = (float) ($validated['waived_off'] ?? 0);
+        $balanceCarriedForward = (float) ($validated['balance_carried_forward'] ?? 0);
+
+        $fee->update([
+            'parent_id' => $validated['parent_id'] ?? null,
+            'student_id' => $validated['student_id'],
+            'month' => $validated['month'],
+            'payment_date' => $validated['payment_date'] ?? null,
+            'copy_fee' => $copyFee,
+            'dress_fee' => $dressFee,
+            'book_fee' => $bookFee,
+            'exam_fee' => $examFee,
+            'amount' => $total,
+            'received_amount' => $receivedAmount,
+            'paid_amount' => $paidAmount,
+            'balance_carried_forward' => $balanceCarriedForward,
+            'remarks' => $validated['remarks'] ?? null,
+            'waived_off' => $waivedOff,
+        ]);
+
+        return redirect()->route('admin.fees.index')
+            ->with('success', 'Fee record updated successfully.');
     }
 }

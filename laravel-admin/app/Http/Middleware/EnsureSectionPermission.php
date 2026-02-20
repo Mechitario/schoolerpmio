@@ -19,8 +19,10 @@ class EnsureSectionPermission
             'dashboard' => (bool) $user->can_view_dashboard,
             'users' => (bool) $user->can_view_admin_users,
             'students' => (bool) $user->can_view_students,
+            'parents' => (bool) $user->can_view_parents,
             'staff' => (bool) $user->can_view_staff,
             'fees' => (bool) $user->can_view_fees,
+            'inventory' => (bool) $user->can_view_inventory,
             'academics' => (bool) $user->can_view_academics,
             default => true,
         };

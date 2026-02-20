@@ -172,14 +172,20 @@
                     <tr class="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
                         <td class="px-5 py-3">
                             <div class="flex items-center gap-3">
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode($fee->student->name ?? 'N/A') }}&size=80&background=06b6d4&color=fff" alt="" class="w-9 h-9 rounded-lg object-cover ring-2 ring-gray-200 dark:ring-slate-600">
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode($fee->student ? $fee->student->name : 'N/A') }}&size=80&background=06b6d4&color=fff" alt="" class="w-9 h-9 rounded-lg object-cover ring-2 ring-gray-200 dark:ring-slate-600">
                                 <div>
-                                    <p class="font-medium text-gray-900 dark:text-slate-100">{{ $fee->student->name ?? '—' }}</p>
-                                    <p class="text-xs text-gray-500 dark:text-slate-500">{{ $fee->student->roll_number ?? '' }}</p>
+                                    <p class="font-medium text-gray-900 dark:text-slate-100">{{ $fee->student ? $fee->student->name : '—' }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-slate-500">{{ $fee->student ? $fee->student->roll_number : '' }}</p>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-5 py-3 text-sm text-gray-600 dark:text-slate-300">{{ $fee->student->class_name ?? '—' }}{{ $fee->student->section ? '-' . $fee->student->section : '' }}</td>
+                        <td class="px-5 py-3 text-sm text-gray-600 dark:text-slate-300">
+                            @if($fee->student)
+                                {{ $fee->student->class_name ?? '—' }}{{ $fee->student->section ? '-' . $fee->student->section : '' }}
+                            @else
+                                —
+                            @endif
+                        </td>
                         <td class="px-5 py-3 text-right font-medium text-gray-900 dark:text-white">${{ number_format($fee->amount, 2) }}</td>
                         <td class="px-5 py-3 text-right font-medium {{ $fee->paid_amount > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-slate-400' }}">
                             ${{ number_format($fee->paid_amount ?? 0, 2) }}
